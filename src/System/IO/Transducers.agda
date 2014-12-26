@@ -10,7 +10,7 @@ open import System.IO.Transducers.Trace using ( Trace )
 module System.IO.Transducers where
 
 open System.IO.Transducers.Lazy public
-  using ( _⇒_ ; inp ; out ; id ; ⟦_⟧ ; _≃_ )
+  using ( _⇒_ ; inp ; out ; ⟦_⟧ ; _≃_ )
 
 open System.IO.Transducers.Strict public
   using ( _⇛_ )
@@ -18,7 +18,7 @@ open System.IO.Transducers.Strict public
 data Style : Set where
   lazy strict : Style
 
-_⇒_is_ : Session → Session → Style → Set
+_⇒_is_ : Session → Session → Style → Set₁
 S ⇒ T is lazy   = S ⇒ T
 S ⇒ T is strict = S ⇛ T
 
