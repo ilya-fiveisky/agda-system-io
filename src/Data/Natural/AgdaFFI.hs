@@ -22,16 +22,19 @@ convert f x = Natural (f (coerce x))
 -- End yuk.
 
 nfoldl :: (a -> a) -> a -> Natural -> a
-nfoldl f x (Natural (n+1)) = nfoldl f (f x) (Natural n)
-nfoldl f x (Natural n)     = x
+nfoldl _ x (Natural 0) = x
+nfoldl f x (Natural n) | n > 0 = nfoldl f (f x) (Natural n-1)
+nfoldl _ _ (Natural _) = undefined
 
 nfoldl' :: (a -> a) -> a -> Natural -> a
-nfoldl' f x (Natural (n+1)) = seq x (nfoldl' f (f x) (Natural n))
-nfoldl' f x (Natural n)     = x
+nfoldl' _ x (Natural 0)     = x
+nfoldl' f x (Natural n) | n > 0 = seq x (nfoldl' f (f x) (Natural n-1))
+nfoldl' _ _ (Natural _) = undefined
 
 nfoldr :: (a -> a) -> a -> Natural -> a
-nfoldr f x (Natural (n+1)) = f (nfoldr f x (Natural n))
-nfoldr f x (Natural n)     = x
+nfoldr _ x (Natural 0)     = x
+nfoldr f x (Natural n) | n > 0 = f (nfoldr f x (Natural n-1))
+nfoldr _ _ (Natural _) = undefined
 
 instance Show Natural where
   show (Natural n) = show n
@@ -44,8 +47,9 @@ instance Ord Natural where
 
 instance Enum Natural where
   succ (Natural n)     = Natural (succ n)
-  pred (Natural (n+1)) = Natural n
-  pred (Natural n)     = Natural 0
+  pred (Natural 0)     = Natural 0
+  pred (Natural n) | n > 0 = Natural n-1
+  pred (Natural _) = undefined
   toEnum               = fromInteger . toEnum
   fromEnum             = fromEnum . toInteger
 
@@ -54,9 +58,9 @@ instance Num Natural where
   (Natural n) - (Natural m) | n < m = Natural 0
   (Natural n) - (Natural m)         = Natural (n - m)
   (Natural n) * (Natural m)         = Natural (n * m)
-  negate n                          = Natural 0
+  negate _                          = Natural 0
   signum (Natural 0)                = Natural 0
-  signum (Natural n)                = Natural 1
+  signum (Natural _)                = Natural 1
   abs                               = id
   fromInteger n | n < 0             = Natural n
   fromInteger n                     = Natural n
