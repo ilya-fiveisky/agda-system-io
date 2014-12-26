@@ -24,6 +24,7 @@ postulate
   _>>=_  : {A B : Set} → (IO A) → (A → (IO B)) → (IO B)
   inf : {A : Set} → ∞(IO A) → (IO A)
 
+{-# BUILTIN IO IO #-}
 {-# COMPILED_TYPE IO IO #-}
 {-# COMPILED return (\ _ a -> return a) #-}
 {-# COMPILED _>>=_ (\ _ _ a f -> a >>= f) #-}
