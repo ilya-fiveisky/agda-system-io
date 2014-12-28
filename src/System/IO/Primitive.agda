@@ -41,7 +41,7 @@ postulate
 
 -- The low-level binary handle primitives.
 -- TODO: Should the string etc. functions be built on top of
--- the binary functions, or should we link directly to the Haskll
+-- the binary functions, or should we link directly to the Haskell
 -- string functions?
 -- TODO: Think about append and read-write modes.
 
