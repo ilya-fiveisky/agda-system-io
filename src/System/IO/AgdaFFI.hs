@@ -11,7 +11,7 @@ import Data.IORef ( IORef, newIORef, readIORef, writeIORef, atomicModifyIORef )
 import System.IO ( IOMode, Handle, openBinaryFile, hFlush )
 import qualified System.IO ( hClose )
 import System.IO.Unsafe ( unsafePerformIO )
-import Control.Applicative ( (<$>), (<*>) )
+import Control.Applicative ( (<$>) )
 import Control.Monad ( join )
 
 -- A library for simple IO transactions.  Currently not handling
@@ -42,7 +42,7 @@ onCommit later = atomicModifyIORef delayed (\ io -> (io >> later, ()))
 -- and just always return without touching xs.
 forceList :: [a] -> IO ()
 forceList [] = return ()
-forceList (x : xs) = forceList xs
+forceList (_ : xs) = forceList xs
 
 -- strictList xs returns a list equivalent to xs,
 -- which will be forced on the next commit.  There
@@ -54,9 +54,9 @@ strictList xs = do
   onCommit (readIORef r >>= forceList)
   return (f r xs) where
     {-# NOINLINE f #-}
-    f r [] = []
-    f r (x : xs) = unsafePerformIO (writeIORef r ys >> return (x : ys)) where
-      ys = f r xs
+    f _ [] = []
+    f r (x : xs') = unsafePerformIO (writeIORef r ys >> return (x : ys)) where
+      ys = f r xs'
 
 -- strictByteString is just a wrapper round strictList.
 strictByteString :: L.ByteString -> IO L.ByteString
