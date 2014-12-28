@@ -1,4 +1,4 @@
-open import Data.ByteString.Static using ( lazy ; strict )
+open import Data.ByteString using ( lazy ; strict )
 open import System.IO using ( _>>_ ; _>>=_ ; getBytes ; putStr ; commit )
 
 module System.IO.Examples.DevNull where
